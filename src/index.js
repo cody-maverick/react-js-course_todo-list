@@ -20,17 +20,13 @@ const AppHeader = () => {
 }
 
 const SearchPanel = () => {
-  return <input type="search" placeholder="search" />
+  const searchText = 'Введите название';
+  return <input type="search" placeholder={searchText} />
 }
 
 const App = () => {
-  
-  const isLoggedIn = false;
-  const loginBox = <span>Log in please</span>
-
   return (
     <div>
-      {isLoggedIn ? null : loginBox}
       <AppHeader />
       <SearchPanel />
       <ToDoList />

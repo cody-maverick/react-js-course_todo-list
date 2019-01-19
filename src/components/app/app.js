@@ -18,7 +18,8 @@ export default class App extends Component {
       this.createTodiItem('Make Awesome App'),
       this.createTodiItem('Have a lunch')
     ],
-    searchValue: ''
+    searchValue: '',
+    filter: 'active'
   }
 
   createTodiItem(label) {
@@ -86,15 +87,14 @@ export default class App extends Component {
   }
 
   onChangeSearch = (value) => {
-    // let newArray = [];
-    // newArray = this.state.todoData.filter((el) => {
-    //   let fullLabel = el.label.toLowerCase(),
-    //     valueLowerCase = value.toLowerCase()
-    //   return fullLabel.indexOf(valueLowerCase) > -1;
-    // })
-    // return newArray;
     this.setState({
       searchValue: value
+    })
+  }
+
+  onFilterChange = (value) => {
+    this.setState({
+      filter: value
     })
   }
 
@@ -108,12 +108,26 @@ export default class App extends Component {
     }
   }
 
+  filterFunc = (arr, filter) => {
+
+     switch (filter) {
+       case 'all':
+         return arr;
+       case 'active':
+         return arr.filter(item => !item.done)
+       case 'done':
+         return arr.filter(item => item.done)     
+       default:
+         return arr
+     }    
+  }
+
   render() {
 
-    const { todoData, searchValue } = this.state;
+    const { todoData, searchValue, filter } = this.state;
     const doneCount = todoData.filter(el => el.done).length;
     const todoCount = todoData.length - doneCount;
-    const searchReslt = this.searchFunc(todoData, searchValue)
+    const searchResult = this.filterFunc(this.searchFunc(todoData, searchValue), filter)
 
 
     return (
@@ -123,10 +137,13 @@ export default class App extends Component {
           <SearchPanel
             onChangeSearch={this.onChangeSearch}
           />
-          <ItemStatusFilter />
+          <ItemStatusFilter
+            filter={filter}
+            onFilterChange = {this.onFilterChange}
+          />
         </div>
         <TodoList
-          todos={searchReslt}
+          todos={searchResult}
           onDeleted={this.deleteItem}
           onToggleImportant={this.onToggleImportant}
           onToggleDone={this.onToggleDone}
